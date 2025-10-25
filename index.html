@@ -91,6 +91,47 @@
                     <span id="reverbValue">30%</span>
                 </div>
             </div>
+
+            <!-- 新しいシンセサイザーパネル -->
+            <div class="panel">
+                <h3>🎛️ シンセサイザー</h3>
+                
+                <div class="control-group">
+                    <label for="waveformSelect">🌊 波形</label>
+                    <select id="waveformSelect" class="synth-select">
+                        <option value="sine">Sine (柔らか)</option>
+                        <option value="square">Square (8bit)</option>
+                        <option value="sawtooth">Sawtooth (太い)</option>
+                        <option value="triangle">Triangle (中間)</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label for="attackSlider">⚡ Attack</label>
+                    <input type="range" id="attackSlider" min="0" max="100" value="1">
+                    <span id="attackValue">0.01s</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="releaseSlider">💫 Release</label>
+                    <input type="range" id="releaseSlider" min="0" max="100" value="50">
+                    <span id="releaseValue">0.5s</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="filterSlider">🎚️ Filter</label>
+                    <input type="range" id="filterSlider" min="0" max="100" value="100">
+                    <span id="filterValue">20000Hz</span>
+                </div>
+            </div>
+
+            <!-- 音階追加パネル -->
+            <div class="panel">
+                <h3>🎼 追加の音階</h3>
+                <p class="instructions" style="font-size: 0.85rem;">
+                    Phase 2で8つの音階に拡張予定
+                </p>
+            </div>
         </aside>
 
         <!-- フッター情報 -->
