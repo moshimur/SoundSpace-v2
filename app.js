@@ -2,9 +2,17 @@
 let scene, camera, renderer, raycaster, mouse;
 let cubes = [];
 let audioContext;
-let masterGain, reverbNode;
+let masterGain, reverbNode, filterNode;
 let isAudioStarted = false;
 let playCount = 0;
+
+// シンセサイザー設定
+let synthSettings = {
+    waveform: 'sine',
+    attack: 0.01,
+    release: 0.5,
+    filterFreq: 20000
+};
 
 // 音階の定義 (C Major Chord + Octave)
 const notes = [
@@ -181,7 +189,14 @@ function initAudio() {
     reverbNode = audioContext.createGain();
     reverbNode.gain.value = 0.3;
 
+    // フィルター
+    filterNode = audioContext.createBiquadFilter();
+    filterNode.type = 'lowpass';
+    filterNode.frequency.value = 20000;
+    filterNode.Q.value = 1;
+
     // 接続
+    filterNode.connect(reverbNode);
     reverbNode.connect(masterGain);
     masterGain.connect(audioContext.destination);
 
@@ -190,8 +205,8 @@ function initAudio() {
     document.getElementById('playBtn').innerHTML = '<span>🎵 Audio Ready</span>';
 }
 
-// ===== 音を鳴らす =====
-function playNote(frequency, duration = 0.5) {
+// ===== 音を鳴らす（Phase 2対応） =====
+function playNote(frequency, duration = 0.8) {
     if (!audioContext) {
         initAudio();
     }
@@ -202,18 +217,22 @@ function playNote(frequency, duration = 0.5) {
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
-    oscillator.type = 'sine';
+    // 波形設定
+    oscillator.type = synthSettings.waveform;
     oscillator.frequency.setValueAtTime(frequency, now);
 
-    // エンベロープ（音の立ち上がりと減衰）
+    // ADSR エンベロープ
+    const attack = synthSettings.attack;
+    const release = synthSettings.release;
+
     gainNode.gain.setValueAtTime(0, now);
-    gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+    gainNode.gain.linearRampToValueAtTime(0.3, now + attack);
+    gainNode.gain.setValueAtTime(0.3, now + duration - release);
     gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
     // 接続
     oscillator.connect(gainNode);
-    gainNode.connect(reverbNode);
-    gainNode.connect(masterGain);
+    gainNode.connect(filterNode);
 
     // 再生
     oscillator.start(now);
@@ -254,6 +273,37 @@ function setupEventListeners() {
         document.getElementById('reverbValue').textContent = value + '%';
         if (reverbNode) {
             reverbNode.gain.value = value / 100;
+        }
+    });
+
+    // 波形選択
+    document.getElementById('waveformSelect').addEventListener('change', (e) => {
+        synthSettings.waveform = e.target.value;
+        console.log('波形変更:', synthSettings.waveform);
+    });
+
+    // Attack スライダー
+    document.getElementById('attackSlider').addEventListener('input', (e) => {
+        const value = e.target.value;
+        synthSettings.attack = (value / 100) * 0.5; // 0〜0.5秒
+        document.getElementById('attackValue').textContent = synthSettings.attack.toFixed(2) + 's';
+    });
+
+    // Release スライダー
+    document.getElementById('releaseSlider').addEventListener('input', (e) => {
+        const value = e.target.value;
+        synthSettings.release = (value / 100) * 2; // 0〜2秒
+        document.getElementById('releaseValue').textContent = synthSettings.release.toFixed(2) + 's';
+    });
+
+    // Filter スライダー
+    document.getElementById('filterSlider').addEventListener('input', (e) => {
+        const value = e.target.value;
+        const freq = 100 + (value / 100) * 19900; // 100Hz〜20000Hz
+        synthSettings.filterFreq = freq;
+        document.getElementById('filterValue').textContent = Math.round(freq) + 'Hz';
+        if (filterNode) {
+            filterNode.frequency.value = freq;
         }
     });
 }
@@ -307,13 +357,13 @@ function onMouseMove(event) {
     }
 }
 
-// ===== キューブクリックアニメーション（簡易版） =====
+// ===== キューブクリックアニメーション =====
 function animateCubeClick(cube) {
     const originalY = cube.userData.originalY;
     const originalIntensity = 0.2;
     
     let progress = 0;
-    const duration = 500; // ミリ秒
+    const duration = 500;
     const startTime = Date.now();
     
     function animate() {
@@ -321,12 +371,10 @@ function animateCubeClick(cube) {
         progress = Math.min(elapsed / duration, 1);
         
         if (progress <= 0.5) {
-            // 上昇
             const t = progress * 2;
             cube.position.y = originalY + (t * 2);
             cube.material.emissiveIntensity = originalIntensity + (t * 0.8);
         } else {
-            // 下降
             const t = (progress - 0.5) * 2;
             cube.position.y = originalY + ((1 - t) * 2);
             cube.material.emissiveIntensity = originalIntensity + ((1 - t) * 0.8);
@@ -374,13 +422,12 @@ function animate() {
         // フローティングエフェクト
         const time = Date.now() * 0.001;
         const originalY = cube.userData.originalY;
-        // アニメーション中でなければフローティング
         if (Math.abs(cube.position.y - originalY) < 0.3) {
             cube.position.y = originalY + Math.sin(time + index) * 0.2;
         }
     });
 
-    // カメラの自動回転（ゆっくり）
+    // カメラの自動回転
     const time = Date.now() * 0.0001;
     camera.position.x = Math.sin(time) * 10;
     camera.position.z = Math.cos(time) * 10;
