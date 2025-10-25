@@ -380,22 +380,6 @@ footer {
         max-height: 40vh;
         border-radius: 16px 16px 0 0;
     }
-    
-　　/* スマホ表示時の順番 */
-    /* 1番目: シンセサイザー */
-    #sidebar .panel:nth-child(3) {
-        order: 1;
-    }
-    
-    /* 2番目: コントロール */
-    #sidebar .panel:nth-child(2) {
-        order: 2;
-    }
-    
-    /* 3番目: サウンドキューブ（最後） */
-    #sidebar .panel:nth-child(1) {
-        order: 3;
-    }
 
     .controls {
         width: 100%;
