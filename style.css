@@ -381,14 +381,14 @@ footer {
         border-radius: 16px 16px 0 0;
     }
     
-    /* スマホ表示時の順番 */
-    /* 1番目: コントロール */
-    #sidebar .panel:nth-child(2) {
+　　/* スマホ表示時の順番 */
+    /* 1番目: シンセサイザー */
+    #sidebar .panel:nth-child(3) {
         order: 1;
     }
     
-    /* 2番目: シンセサイザー */
-    #sidebar .panel:nth-child(3) {
+    /* 2番目: コントロール */
+    #sidebar .panel:nth-child(2) {
         order: 2;
     }
     
