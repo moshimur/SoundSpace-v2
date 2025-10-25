@@ -184,13 +184,14 @@ open http://localhost:8000
 
 ## 🔮 今後の可能性
 
-Phase 3以降で追加可能な機能：
+Phase3以降で追加可能な機能：
 - 🎹 キーボード演奏（QWERTY対応）
 - 🎼 音階の拡張（1オクターブ以上）
 - 📝 録音・再生機能
 - 🎚️ 追加エフェクト（Delay、Chorus、Distortion）
 - 🎮 MIDIキーボード対応
 - 👥 マルチプレイヤーモード
+※Phase3以降の機能を追加したら動かなくなったため、Phase2に戻したSoundSpace-v2を新規作成した
 
 ---
 
@@ -213,12 +214,6 @@ MIT License
 - **Three.js** - 素晴らしい3Dライブラリ
 - **Web Audio API** - ブラウザネイティブな音響処理
 - **GitHub Pages** - 無料ホスティング
-
----
-
-## 📸 スクリーンショット
-
-![SoundSpace Interface](https://via.placeholder.com/800x450/667eea/ffffff?text=SoundSpace+3D+Music+Creator)
 
 ---
 
