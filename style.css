@@ -298,9 +298,41 @@ header {
 }
 
 #volumeValue,
-#reverbValue {
+#reverbValue,
+#attackValue,
+#releaseValue,
+#filterValue {
     font-weight: 600;
     color: #4ecdc4;
+}
+
+/* ===== 新しいシンセサイザーコントロール ===== */
+.synth-select {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.synth-select:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.synth-select:focus {
+    outline: none;
+    border-color: #4ecdc4;
+    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+}
+
+.synth-select option {
+    background: #1a1a2e;
+    color: #ffffff;
 }
 
 /* ===== フッター ===== */
