@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundSpace - 3D音楽制作空間</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ローディング画面 -->
+    <div id="loading">
+        <div class="loading-content">
+            <h1>SoundSpace</h1>
+            <p>3D空間で音楽を創造しよう</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div id="app">
+        <!-- ヘッダー -->
+        <header>
+            <div class="logo">
+                <h1>🎵 SoundSpace</h1>
+            </div>
+            <div class="controls">
+                <button id="playBtn" class="btn btn-primary" disabled>
+                    <span>▶️ Start Audio</span>
+                </button>
+                <button id="resetBtn" class="btn btn-secondary">
+                    🔄 Reset
+                </button>
+            </div>
+        </header>
+
+        <!-- 3Dキャンバス -->
+        <div id="canvas-container"></div>
+
+        <!-- サイドパネル -->
+        <aside id="sidebar">
+            <div class="panel">
+                <h3>🎹 サウンドキューブ</h3>
+                <p class="instructions">
+                    キューブをクリックして音を鳴らそう！<br>
+                    各キューブは異なる音程を持っています。
+                </p>
+                
+                <div class="sound-list">
+                    <div class="sound-item">
+                        <span class="color-badge" style="background: #ff6b6b;"></span>
+                        <span>C (ド)</span>
+                    </div>
+                    <div class="sound-item">
+                        <span class="color-badge" style="background: #4ecdc4;"></span>
+                        <span>E (ミ)</span>
+                    </div>
+                    <div class="sound-item">
+                        <span class="color-badge" style="background: #45b7d1;"></span>
+                        <span>G (ソ)</span>
+                    </div>
+                    <div class="sound-item">
+                        <span class="color-badge" style="background: #96ceb4;"></span>
+                        <span>C (ド-高)</span>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <h4>📊 Stats</h4>
+                    <div class="stat-row">
+                        <span>Total Plays:</span>
+                        <span id="playCount">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Last Note:</span>
+                        <span id="lastNote">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h3>⚙️ コントロール</h3>
+                <div class="control-group">
+                    <label for="volumeSlider">🔊 Volume</label>
+                    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                    <span id="volumeValue">70%</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="reverbSlider">🌊 Reverb</label>
+                    <input type="range" id="reverbSlider" min="0" max="100" value="30">
+                    <span id="reverbValue">30%</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- フッター情報 -->
+        <footer>
+            <p>マウスドラッグで視点回転 | ホイールでズーム</p>
+        </footer>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- メインJavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
