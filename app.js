@@ -192,7 +192,9 @@ function initAudio() {
 
 // ===== 音を鳴らす =====
 function playNote(frequency, duration = 0.5) {
-    if (!audioContext) return;
+    if (!audioContext) {
+        initAudio();
+    }
 
     const now = audioContext.currentTime;
 
@@ -305,55 +307,40 @@ function onMouseMove(event) {
     }
 }
 
-// ===== キューブクリックアニメーション =====
+// ===== キューブクリックアニメーション（簡易版） =====
 function animateCubeClick(cube) {
-    const originalY = cube.userData.originalY;
-    
-    // ジャンプアニメーション
-    gsap.to(cube.position, {
-        y: originalY + 2,
-        duration: 0.2,
-        ease: "power2.out",
-        onComplete: () => {
-            gsap.to(cube.position, {
-                y: originalY,
-                duration: 0.3,
-                ease: "bounce.out"
-            });
-        }
-    });
-
-    // 発光アニメーション
-    gsap.to(cube.material, {
-        emissiveIntensity: 1,
-        duration: 0.1,
-        yoyo: true,
-        repeat: 1
-    });
-}
-
-// 簡易版アニメーション（GSAPなしバージョン）
-function animateCubeClickSimple(cube) {
     const originalY = cube.userData.originalY;
     const originalIntensity = 0.2;
     
     let progress = 0;
-    const jumpAnimation = setInterval(() => {
-        progress += 0.05;
+    const duration = 500; // ミリ秒
+    const startTime = Date.now();
+    
+    function animate() {
+        const elapsed = Date.now() - startTime;
+        progress = Math.min(elapsed / duration, 1);
+        
         if (progress <= 0.5) {
-            cube.position.y = originalY + (progress * 4);
-            cube.material.emissiveIntensity = originalIntensity + (progress * 1.6);
+            // 上昇
+            const t = progress * 2;
+            cube.position.y = originalY + (t * 2);
+            cube.material.emissiveIntensity = originalIntensity + (t * 0.8);
         } else {
-            cube.position.y = originalY + ((1 - progress) * 4);
-            cube.material.emissiveIntensity = originalIntensity + ((1 - progress) * 1.6);
+            // 下降
+            const t = (progress - 0.5) * 2;
+            cube.position.y = originalY + ((1 - t) * 2);
+            cube.material.emissiveIntensity = originalIntensity + ((1 - t) * 0.8);
         }
         
-        if (progress >= 1) {
-            clearInterval(jumpAnimation);
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        } else {
             cube.position.y = originalY;
             cube.material.emissiveIntensity = originalIntensity;
         }
-    }, 20);
+    }
+    
+    animate();
 }
 
 // ===== シーンリセット =====
@@ -386,7 +373,11 @@ function animate() {
         
         // フローティングエフェクト
         const time = Date.now() * 0.001;
-        cube.position.y = cube.userData.originalY + Math.sin(time + index) * 0.2;
+        const originalY = cube.userData.originalY;
+        // アニメーション中でなければフローティング
+        if (Math.abs(cube.position.y - originalY) < 0.3) {
+            cube.position.y = originalY + Math.sin(time + index) * 0.2;
+        }
     });
 
     // カメラの自動回転（ゆっくり）
